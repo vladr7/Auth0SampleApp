@@ -13,10 +13,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.auth0.android.Auth0
+import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
+import com.auth0.android.result.UserProfile
 import com.example.auth0sampleapp.ui.theme.Auth0SampleAppTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -66,6 +68,7 @@ class MainActivity : ComponentActivity() {
                 override fun onSuccess(credentials: Credentials) {
                     // Authentication was successful!
                     Toast.makeText(this@MainActivity, "Login Success", Toast.LENGTH_SHORT).show()
+                    showUserProfile(credentials.accessToken, account)
                 }
             })
     }
@@ -87,6 +90,25 @@ class MainActivity : ComponentActivity() {
                         "Logout failed: ${error.message}",
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+            })
+    }
+
+    private fun showUserProfile(accessToken: String, account: Auth0) {
+        var client = AuthenticationAPIClient(account)
+
+        // With the access token, call `userInfo` and get the profile from Auth0.
+        client.userInfo(accessToken)
+            .start(object : Callback<UserProfile, AuthenticationException> {
+                override fun onFailure(exception: AuthenticationException) {
+                    // Something went wrong!
+                }
+
+                override fun onSuccess(profile: UserProfile) {
+                    // We have the user's profile!
+                    val email = profile.email
+                    val name = profile.name
+                    Toast.makeText(this@MainActivity, "$email + $name", Toast.LENGTH_SHORT).show()
                 }
             })
     }
