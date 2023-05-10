@@ -18,6 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "demo"]
     }
 
     buildTypes {
@@ -63,4 +64,5 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation 'com.auth0.android:auth0:2.9.2'
 }
